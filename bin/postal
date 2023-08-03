@@ -48,18 +48,18 @@ get-latest-postal-version() {
         return 1
     fi
 
-    local response=`curl -s https://api.github.com/repos/postalserver/postal/releases/latest`
+    local response=`curl -s https://gitlab.jrbit.de/api/v4/projects/145/repository/tags`
 
-    local error=`echo $response | jq -r '.message'`
+    local error=`echo $response | jq -r '.[0].message'`
     if [[ "$error" == *"rate limit exceeded"* ]]; then
-        echo "GitHub API rate limit exceeded. Try again later." > /dev/stderr
+        echo "Gitlab API rate limit exceeded. Try again later." > /dev/stderr
         return 1
     fi
 
-    local latest_version=`echo $response | jq -r '.tag_name'`
+    local latest_version=`echo $response | jq -r '.[0].tag_name'`
     if [ "$latest_version" == "" ] || [ "$latest_version" == "null" ]; then
-        echo "Could not get latest version of Postal from GitHub. Make sure you" > /dev/stderr
-        echo "are connected to the internet and GitHub is available." > /dev/stderr
+        echo "Could not get latest version of Postal from Gitlab. Make sure you" > /dev/stderr
+        echo "are connected to the internet and Gitlab is available." > /dev/stderr
         return 1
     fi
 
